@@ -11,12 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.nxp.nfclib.CardType;
 import com.nxp.nfclib.NxpNfcLib;
-import com.nxp.nfclib.ntag.NTagFactory;
-import com.nxp.nfclib.ntag.NTagI2C;
 
 import java.io.UnsupportedEncodingException;
 
@@ -24,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
     private TextView textView = null;
+    private EditText editText_message = null;
     private String strKey = "3969956a568c92252638524453df1091";
     private NxpNfcLib libInstance = null; // TapLinx Library
     private NdefMessage message = null;
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textView = (TextView) findViewById(R.id.mainTextView);
+        editText_message = (EditText) findViewById(R.id.editText_message);
         initializeLibrary();
 
         Button btn_send = (Button) findViewById(R.id.btn_send);
@@ -47,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    message = createNdefTextMessage("1");
+                    Log.d(TAG, "Message from Edit Text: " + editText_message.getText().toString());
+                    message = createNdefTextMessage(editText_message.getText().toString());
                     if (message != null) {
                         dialog = new ProgressDialog(MainActivity.this);
                         dialog.setMessage("Tag NFC Tag please");
@@ -80,14 +82,18 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent( intent );
     }
 
+    // https://www.mifare.net/wp-content/uploads/2016/08/AN11876-Starting-Development-with-TapLinx-SDK.pdf
     private void cardLogic (final Intent intent) {
         CardType cardType = libInstance.getCardType( intent );
         Log.d( TAG, "Card type found: " + cardType.getTagName());
         textView.setText("Card type found: " + cardType.getTagName());
 
+
         if (CardType.NTagI2C1K == cardType) {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            NTagI2C nTagI2C = NTagFactory.getInstance().getNTAGI2C1K( NTagI2C);
+            /*
+            IMFClassicEV1 objClassic = ClassicFactory.getInstance().getClassicEV1( MifareClassic.get( tag));
+            NTagI2C nTagI2C = NTagFactory.getInstance().getNTAGI2C1K( NTagI2C.);
             if ( ! nTagI2C.getReader().isConnected()) {
                 nTagI2C.getReader().connect();
             }
@@ -97,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-
+            */
             //nTagI2C.writeNDEF(msg);
         }
 
