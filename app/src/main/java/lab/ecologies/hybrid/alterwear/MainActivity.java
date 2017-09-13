@@ -33,23 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private Tag tag = null;
     private Activity main;
     private TextView textView = null;
+    private TextView record = null;
     private EditText editText_message = null;
     private String strKey = "3969956a568c92252638524453df1091";
     private NxpNfcLib libInstance = null; // TapLinx Library
     private NdefMessage message = null;
     private ProgressDialog dialog;
     private View v;
-    // Current authentication state
-    private static int mAuthStatus;
 
-    private static Intent mIntent;
-
-    // Current used password
-    private static byte[] mPassword;
-
-    public static Intent getmIntent() {
-        return mIntent;
-    }
 
     private void initializeLibrary() {
         libInstance = NxpNfcLib.getInstance();
@@ -63,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         main = this;
 
         textView = (TextView) findViewById(R.id.mainTextView);
+        record = (TextView) findViewById(R.id.record);
         editText_message = (EditText) findViewById(R.id.editText_message);
         v = findViewById(R.id.demoLayout);
         initializeLibrary();
@@ -120,7 +112,24 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "prod: " + prod);
 
             if (reader != null) {
-                doNdef();
+                // NDEF Message to write in the tag
+                NdefMessage msg = null;
+                String wtf = editText_message.getText().toString();
+                Log.d(TAG, "newIntent, wtf: " + wtf);
+                Log.d(TAG, "newIntent, editText contents: " + editText_message.getText().toString()+ ", global var message: " + message.describeContents());
+                msg = createNdefTextMessage(editText_message.getText().toString());
+                // Time statistics to return
+                long timeNdefWrite = 0;
+                long RegTimeOutStart = System.currentTimeMillis();
+
+                // Write the NDEF using NfcA commands to avoid problems when dealing with protected tags
+                // Calling reader close / connect resets the authenticated status
+                record.setText(new String(msg.getRecords()[0].getPayload(), "UTF-8"));
+                reader.writeNDEF(msg, null);
+
+                timeNdefWrite = System.currentTimeMillis() - RegTimeOutStart;
+                dialog.dismiss();
+                Toast.makeText(main, "time to write: " + timeNdefWrite, Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -194,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private NdefMessage createNdefTextMessage(String text) throws UnsupportedEncodingException {
+        Log.d(TAG, "crateNdefTextMessage, text: " + text);
         if (text.length() == 0) {
             return null;
         }

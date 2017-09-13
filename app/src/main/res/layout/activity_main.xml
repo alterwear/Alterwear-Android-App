@@ -48,11 +48,18 @@
             android:layout_height="wrap_content"
             android:hint="Enter msg here"/>
 
+
         <Button
             android:id="@+id/btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Send"/>
+
+        <TextView
+            android:id="@+id/record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
 
     </LinearLayout>
 
