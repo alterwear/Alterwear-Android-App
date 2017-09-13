@@ -16,6 +16,30 @@
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp">
 
+        <Button
+            android:id="@+id/btn_send_zero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ZERO"/>
+
+        <Button
+            android:id="@+id/btn_send_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ONE"/>
+
+        <Button
+            android:id="@+id/btn_send_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TWO"/>
+
+        <Button
+            android:id="@+id/btn_send_three"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="THREE"/>
+
 
         <ImageButton
             android:id="@+id/btn_demo_one"
