@@ -1,6 +1,9 @@
 package lab.ecologies.hybrid.alterwear;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -13,21 +16,40 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nxp.nfclib.CardType;
 import com.nxp.nfclib.NxpNfcLib;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class MainActivity extends AppCompatActivity {
 
+    private I2C_Enabled_Commands reader;
+
     private String TAG = MainActivity.class.getSimpleName();
+
+    private Tag tag = null;
+    private Activity main;
     private TextView textView = null;
     private EditText editText_message = null;
     private String strKey = "3969956a568c92252638524453df1091";
     private NxpNfcLib libInstance = null; // TapLinx Library
     private NdefMessage message = null;
     private ProgressDialog dialog;
+    private View v;
+    // Current authentication state
+    private static int mAuthStatus;
+
+    private static Intent mIntent;
+
+    // Current used password
+    private static byte[] mPassword;
+
+    public static Intent getmIntent() {
+        return mIntent;
+    }
 
     private void initializeLibrary() {
         libInstance = NxpNfcLib.getInstance();
@@ -38,9 +60,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        main = this;
 
         textView = (TextView) findViewById(R.id.mainTextView);
         editText_message = (EditText) findViewById(R.id.editText_message);
+        v = findViewById(R.id.demoLayout);
         initializeLibrary();
 
         Button btn_send = (Button) findViewById(R.id.btn_send);
@@ -61,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     @Override
@@ -78,8 +103,65 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onNewIntent (final Intent intent) {
         Log.d( TAG, "onNewIntent");
-        cardLogic( intent );
+        // It is the time to write the tag
+        Tag currentTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        try {
+            reader = I2C_Enabled_Commands.get(currentTag);
+            if (reader == null) {
+                String message = "The Tag could not be identified or this NFC device does not "
+                        + "support the NFC Forum commands needed to access this tag";
+                String title = "Communication failed";
+                showAlert(message, title);
+            } else {
+                reader.connect();
+            }
+
+            Ntag_Get_Version.Prod prod = reader.getProduct();
+            Log.d(TAG, "prod: " + prod);
+
+            if (reader != null) {
+                doNdef();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /*
+        if (message != null) {
+            nfcMger.writeTag(currentTag, message);
+            dialog.dismiss();
+            Toast.makeText(getApplicationContext(), "Tag written", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            // Handle intent
+
+        }
+
+        */
         super.onNewIntent( intent );
+    }
+
+    private void doNdef() throws IOException {
+        // NDEF Message to write in the tag
+        NdefMessage msg = null;
+        msg = createNdefTextMessage(editText_message.getText().toString());
+        try {
+            // Time statistics to return
+            long timeNdefWrite = 0;
+            long RegTimeOutStart = System.currentTimeMillis();
+
+            // Write the NDEF using NfcA commands to avoid problems when dealing with protected tags
+            // Calling reader close / connect resets the authenticated status
+            Log.d(TAG, "doNdef, about to writeNDEF w/ this msg:" + msg.describeContents());
+            reader.writeNDEF(msg, null);
+
+            timeNdefWrite = System.currentTimeMillis() - RegTimeOutStart;
+            dialog.dismiss();
+            Toast.makeText(main, "time to write: " + timeNdefWrite, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(main, "write tag failed", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     // https://www.mifare.net/wp-content/uploads/2016/08/AN11876-Starting-Development-with-TapLinx-SDK.pdf
@@ -89,11 +171,13 @@ public class MainActivity extends AppCompatActivity {
         textView.setText("Card type found: " + cardType.getTagName());
 
 
-        if (CardType.NTagI2C1K == cardType) {
+        if (CardType.NTagI2CPlus1K== cardType) {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+            //IMFClassicEV1 objClassic = ClassicFactory.getInstance().getClassicEV1( MifareClassic.get( tag));
+
             /*
-            IMFClassicEV1 objClassic = ClassicFactory.getInstance().getClassicEV1( MifareClassic.get( tag));
-            NTagI2C nTagI2C = NTagFactory.getInstance().getNTAGI2C1K( NTagI2C.);
+            INTAGI2Cplus nTagI2C = NTagFactory.getInstance().getNTAGI2CPlus1K(Ndef.get(tag));
             if ( ! nTagI2C.getReader().isConnected()) {
                 nTagI2C.getReader().connect();
             }
@@ -103,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            */
+    */
             //nTagI2C.writeNDEF(msg);
         }
 
@@ -122,5 +206,25 @@ public class MainActivity extends AppCompatActivity {
         System.arraycopy(langBytes, 0, payload, 1, langLength);
         System.arraycopy(textBytes, 0, payload, langLength + 1, textLength);
         return new NdefMessage(new NdefRecord[]{new NdefRecord((short) 1, NdefRecord.RTD_TEXT, new byte[0], payload)});
+    }
+
+    private void showAlert(final String message, final String title) {
+        main.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(main)
+                        .setMessage(message)
+                        .setTitle(title)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+
+                                    }
+                                }).show();
+            }
+        });
+
     }
 }
