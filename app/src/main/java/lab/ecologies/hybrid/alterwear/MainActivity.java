@@ -97,6 +97,66 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button btn_send_one = (Button) findViewById(R.id.btn_send_one);
+        btn_send_one.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Log.d(TAG, "Send one");
+                    message = createNdefTextMessage("1");
+                    if (message != null) {
+                        dialog = new ProgressDialog(MainActivity.this);
+                        dialog.setMessage("Tag NFC Tag please");
+                        dialog.show();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        Button btn_send_two = (Button) findViewById(R.id.btn_send_two);
+        btn_send_two.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Log.d(TAG, "Send two");
+                    message = createNdefTextMessage("2");
+                    if (message != null) {
+                        dialog = new ProgressDialog(MainActivity.this);
+                        dialog.setMessage("Tag NFC Tag please");
+                        dialog.show();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        Button btn_send_three = (Button) findViewById(R.id.btn_send_three);
+        btn_send_three.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Log.d(TAG, "Send three");
+                    message = createNdefTextMessage("3");
+                    if (message != null) {
+                        dialog = new ProgressDialog(MainActivity.this);
+                        dialog.setMessage("Tag NFC Tag please");
+                        dialog.show();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
+
+
     }
 
     @Override
