@@ -78,6 +78,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button btn_send_zero = (Button) findViewById(R.id.btn_send_zero);
+        btn_send_zero.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Log.d(TAG, "Send zero");
+                    message = createNdefTextMessage("0");
+                    if (message != null) {
+                        dialog = new ProgressDialog(MainActivity.this);
+                        dialog.setMessage("Tag NFC Tag please");
+                        dialog.show();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
     }
 
     @Override
@@ -112,20 +131,15 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "prod: " + prod);
 
             if (reader != null) {
-                // NDEF Message to write in the tag
-                NdefMessage msg = null;
-                String wtf = editText_message.getText().toString();
-                Log.d(TAG, "newIntent, wtf: " + wtf);
-                Log.d(TAG, "newIntent, editText contents: " + editText_message.getText().toString()+ ", global var message: " + message.describeContents());
-                msg = createNdefTextMessage(editText_message.getText().toString());
+
                 // Time statistics to return
                 long timeNdefWrite = 0;
                 long RegTimeOutStart = System.currentTimeMillis();
 
                 // Write the NDEF using NfcA commands to avoid problems when dealing with protected tags
                 // Calling reader close / connect resets the authenticated status
-                record.setText(new String(msg.getRecords()[0].getPayload(), "UTF-8"));
-                reader.writeNDEF(msg, null);
+                record.setText(new String(message.getRecords()[0].getPayload(), "UTF-8"));
+                reader.writeNDEF(message, null);
 
                 timeNdefWrite = System.currentTimeMillis() - RegTimeOutStart;
                 dialog.dismiss();
