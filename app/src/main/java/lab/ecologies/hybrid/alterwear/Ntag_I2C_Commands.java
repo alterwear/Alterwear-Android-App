@@ -373,7 +373,7 @@ public class Ntag_I2C_Commands extends I2C_Enabled_Commands {
 	@Override
 	public void writeEEPROM(byte[] data, WriteEEPROMListener listener) throws IOException, FormatException {
 		if (data.length > getProduct().getMemsize()) {
-			throw new IOException("Data is to long");
+			throw new IOException("Data is too long");
 		}
 		reader.SectorSelect((byte) 0);
 		byte[] temp;

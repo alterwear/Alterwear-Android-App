@@ -172,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
                 // Write the NDEF using NfcA commands to avoid problems when dealing with protected tags
                 // Calling reader close / connect resets the authenticated status
                 record.setText(new String(message.getRecords()[0].getPayload(), "UTF-8"));
+                // second arg is the "writeEEPROMlistener". Since it's null here, noone gets notified.
+                // I'm not sure if that means we don't hear about success or not.
                 reader.writeNDEF(message, null);
 
                 timeNdefWrite = System.currentTimeMillis() - RegTimeOutStart;
