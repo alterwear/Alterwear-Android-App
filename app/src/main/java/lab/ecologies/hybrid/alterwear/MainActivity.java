@@ -127,6 +127,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button btn_send_long_text = (Button) findViewById(R.id.btn_long_text);
+        btn_send_long_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Log.d(TAG, "Send a long message in text");
+                    message = createNdefTextMessage("Sell your cleverness and buy bewilderment.");
+                    if (message != null) {
+                        dialog = new ProgressDialog(MainActivity.this);
+                        dialog.setMessage("Tag NFC Tag please");
+                        dialog.show();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
 
 
