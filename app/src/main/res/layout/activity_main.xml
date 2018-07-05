@@ -56,6 +56,12 @@
             android:text="Sell your cleverness and buy bewilderment"
             />
 
+        <Button
+            android:id="@+id/btn_read_eeprom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Read EEPROM"/>
+
 
         <TextView
             android:id="@+id/record"

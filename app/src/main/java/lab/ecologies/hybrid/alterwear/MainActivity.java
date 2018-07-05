@@ -145,6 +145,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button btn_read_eeprom = (Button) findViewById(R.id.btn_read_eeprom);
+        btn_read_eeprom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "read eeprom...");
+            }
+        });
+
 
 
 
@@ -165,6 +173,50 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onNewIntent (final Intent intent) {
         Log.d( TAG, "onNewIntent");
+
+        /*
+        if (intent == null) return;
+
+        // next chunk mostly from here: https://www.survivingwithandroid.com/2015/03/android-nfc-app-android-nfc-tutorial.html
+        String type = intent.getType();
+        String action = intent.getAction();
+        Log.d(TAG, "type: " + type + ", action: " + action);
+
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+            Log.d(TAG, "Action NDEF Found");
+            Parcelable[] parcs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+
+            for (Parcelable p : parcs) {
+                NdefRecord[] records = message.getRecords();
+                for (NdefRecord ndefRecord : records) {
+                    short tnf = ndefRecord.getTnf();
+                    Log.d(TAG, "tnf: " + tnf);
+                    // here we handle the payload.
+                    byte[] payload = ndefRecord.getPayload();
+                    byte status = payload[0];
+                    Log.d(TAG, "status: " + status);
+                    int enc = status & 0x80; // Bit mask 7th bit 1
+                    String encString = null;
+                    if (enc == 0)
+                        encString = "UTF-8";
+                    else
+                        encString = "UTF-16";
+
+                    int ianaLength =  status && 0x3F; // Bit mask bit 5..0
+                    Log.d(TAG, "ianaLength: " + ianaLength);
+                    try {
+                        String content = new String(payload, ianaLength + 1,
+                                payload.length - 1 - ianaLength, encString);
+                        Log.d(TAG, content);
+                        record.setText(content);
+                    }
+                    catch(Throwable t) {
+                        t.printStackTrace();
+                    }
+                }
+            }
+        }
+        */
         // It is the time to write the tag
         Tag currentTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         try {
