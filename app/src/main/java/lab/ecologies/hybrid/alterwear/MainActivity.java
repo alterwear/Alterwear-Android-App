@@ -10,6 +10,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private NdefMessage message = null;
     private ProgressDialog dialog;
     private View v;
+    TextView tvNFCContent;
 
 
     private void initializeLibrary() {
@@ -153,9 +155,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
+        tvNFCContent = (TextView) findViewById(R.id.nfc_contents);
+        readFromIntent(getIntent());
     }
 
     @Override
@@ -176,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
 
         //This might be useful: http://www.codexpedia.com/android/android-nfc-read-and-write-example/
         // this too: https://www.survivingwithandroid.com/2016/01/nfc-tag-writer-android.html
-        
-        /*
+
+
         if (intent == null) return;
 
         // next chunk mostly from here: https://www.survivingwithandroid.com/2015/03/android-nfc-app-android-nfc-tutorial.html
@@ -185,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         String action = intent.getAction();
         Log.d(TAG, "type: " + type + ", action: " + action);
 
+        /*
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             Log.d(TAG, "Action NDEF Found");
             Parcelable[] parcs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
@@ -259,6 +261,45 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent( intent );
     }
 
+    /******************************************************************************
+     **********************************Read From NFC Tag***************************
+     ******************************************************************************/
+    private void readFromIntent(Intent intent) {
+        Log.d(TAG, "readFromIntent");
+        String action = intent.getAction();
+        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)
+                || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
+                || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+            Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+            NdefMessage[] msgs = null;
+            if (rawMsgs != null) {
+                msgs = new NdefMessage[rawMsgs.length];
+                for (int i = 0; i < rawMsgs.length; i++) {
+                    msgs[i] = (NdefMessage) rawMsgs[i];
+                }
+            }
+            buildTagViews(msgs);
+        }
+    }
+    private void buildTagViews(NdefMessage[] msgs) {
+        if (msgs == null || msgs.length == 0) return;
+
+        String text = "";
+//        String tagId = new String(msgs[0].getRecords()[0].getType());
+        byte[] payload = msgs[0].getRecords()[0].getPayload();
+        String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16"; // Get the Text Encoding
+        int languageCodeLength = payload[0] & 0063; // Get the Language Code, e.g. "en"
+        // String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
+
+        try {
+            // Get the Text
+            text = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+        } catch (UnsupportedEncodingException e) {
+            Log.e("UnsupportedEncoding", e.toString());
+        }
+
+        tvNFCContent.setText("NFC Content: " + text);
+    }
 
     private NdefMessage createNdefTextMessage(String text) throws UnsupportedEncodingException {
         Log.d(TAG, "crateNdefTextMessage, text: " + text);
