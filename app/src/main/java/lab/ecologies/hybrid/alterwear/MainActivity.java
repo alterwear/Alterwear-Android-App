@@ -174,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
     public void onNewIntent (final Intent intent) {
         Log.d( TAG, "onNewIntent");
 
+        //This might be useful: http://www.codexpedia.com/android/android-nfc-read-and-write-example/
+        // this too: https://www.survivingwithandroid.com/2016/01/nfc-tag-writer-android.html
+        
         /*
         if (intent == null) return;
 
