@@ -171,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    // useful: https://github.com/codexpedia/android_nfc_read_write
+
     @Override
     public void onNewIntent (final Intent intent) {
         Log.d( TAG, "onNewIntent");
