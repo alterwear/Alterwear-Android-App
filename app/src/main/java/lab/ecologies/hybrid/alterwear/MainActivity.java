@@ -147,6 +147,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button btn_send_bitmap_chunk = (Button) findViewById(R.id.btn_bitmap_chunk);
+        btn_send_bitmap_chunk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Log.d(TAG, "Send a chunk of a bitmap");
+                    message = createNdefTextMessage("0x01");
+                    if (message != null) {
+                        dialog = new ProgressDialog(MainActivity.this);
+                        dialog.setMessage("Tag NFC Tag please");
+                        dialog.show();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         Button btn_read_eeprom = (Button) findViewById(R.id.btn_read_eeprom);
         btn_read_eeprom.setOnClickListener(new View.OnClickListener() {
             @Override

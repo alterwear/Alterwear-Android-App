@@ -40,20 +40,18 @@
             android:layout_height="wrap_content"
             android:text="THREE"/>
 
-
-        <ImageButton
-            android:id="@+id/btn_demo_one"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/eink_kitty"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"/>
-
         <Button
             android:id="@+id/btn_long_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sell your cleverness and buy bewilderment"
+            />
+
+        <Button
+            android:id="@+id/btn_bitmap_chunk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bitmap chunk"
             />
 
         <Button
