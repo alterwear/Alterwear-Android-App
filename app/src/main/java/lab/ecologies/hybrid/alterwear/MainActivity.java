@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Log.d(TAG, "Send a chunk of a bitmap");
                     //message = createNdefTextMessage("0xFF, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0xFF");
-                    message = createNdefTextMessage("FF  FF 00 FF 00 FF FF");
+                    message = createNdefTextMessage("FF FF 00 FF 00 FF FF");
                     if (message != null) {
                         dialog = new ProgressDialog(MainActivity.this);
                         dialog.setMessage("Tag NFC Tag please");
