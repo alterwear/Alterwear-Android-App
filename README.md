@@ -1,10 +1,12 @@
 # Alterwear-Android-App
 
-# Setup Development Environment
+## Setup Development Environment
 0. Download [the latest version of Android Studio](https://developer.android.com/studio/). This README was written with version 181.5056338-windows, or version 3.2.1
-1. 
-2. Pull this repo to computer: ```git clone ```
-3. 
+1. This app was developed for Android ???, v ??. So you may need to install an older SDK.
+2. Pull this repo to computer: ```git clone https://github.com/molecule/Alterwear-Android-App.git```
+
+## Programming
+0. The majority of changes are made to app/src/main/java/lab/ecologies/hybrid/alterwear/MainActivit.java
 
 ## Origins
 The original source code was [here](https://www.nxp.com/products/identification-and-security/nfc/nfc-tags-for-electronics/ntag-ic-iplus-i-explorer-kit:OM5569-NT322E?&fpsp=1&tab=Design_Tools_Tab), linked from [this thread on the NXP forums](https://community.nxp.com/thread/386404)
