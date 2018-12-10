@@ -13,7 +13,7 @@
 0. The majority of changes are made to app/src/main/java/lab/ecologies/hybrid/alterwear/MainActivity.java
 
 ## Usage
-0. 
+0. Click a button. A dialog box will pop up asking you to tag an NFC tag. Tag an NFC tag and the dialog box will disappear. The phone should chime once it has successfully transferred the data. The data that was transferred is printed to the screen in a textbox that's below all the buttons. A Toast also pops up to indicate how long it took to complete the write.
 
 ## Origins
 The original source code was [here](https://www.nxp.com/products/identification-and-security/nfc/nfc-tags-for-electronics/ntag-ic-iplus-i-explorer-kit:OM5569-NT322E?&fpsp=1&tab=Design_Tools_Tab), linked from [this thread on the NXP forums](https://community.nxp.com/thread/386404)
