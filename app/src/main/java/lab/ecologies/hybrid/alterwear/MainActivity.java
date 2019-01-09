@@ -315,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             // Get the Text
             text = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+            Log.d(TAG, "buildTagViews, payload: " + text);
         } catch (UnsupportedEncodingException e) {
             Log.e("UnsupportedEncoding", e.toString());
         }

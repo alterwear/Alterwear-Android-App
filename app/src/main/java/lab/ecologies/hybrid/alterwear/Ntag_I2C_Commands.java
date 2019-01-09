@@ -30,6 +30,7 @@ package lab.ecologies.hybrid.alterwear;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.Tag;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -51,6 +52,9 @@ import lab.ecologies.hybrid.alterwear.listeners.WriteEEPROMListener;
  * 
  */
 public class Ntag_I2C_Commands extends I2C_Enabled_Commands {
+
+	private String TAG = MainActivity.class.getSimpleName();
+
 	private static final int DEFAULT_NDEF_MESSAGE_SIZE = 0;
 	private static final int EMPTY_NDEF_MESSAGE_SIZE = 104;
 	private static final int SRAM_SIZE = 64;
@@ -379,6 +383,7 @@ public class Ntag_I2C_Commands extends I2C_Enabled_Commands {
 		byte[] temp;
 		int index = 0;
 		byte blockNr = Register.User_memory_Begin.getValue();
+		Log.d(TAG, "writeEEPROM inside Ntag_I2C_Commands, blockNr: " + blockNr);
 
 		// write till all Data is written or the Block 0xFF was written(BlockNr
 		// should be 0 then, because of the type byte)

@@ -32,6 +32,7 @@ import android.nfc.NdefMessage;
 import android.nfc.Tag;
 import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.NfcA;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -46,6 +47,7 @@ import lab.ecologies.hybrid.alterwear.listeners.WriteEEPROMListener;
 
 public abstract class I2C_Enabled_Commands {
 
+	private static String TAG = MainActivity.class.getSimpleName();
 	/**
 	 * This method returns the reader to be used based on the NFC Phone capabilities
 	 * This distinction is needed because in the field we can find old NFC Phones that do not support
@@ -106,10 +108,12 @@ public abstract class I2C_Enabled_Commands {
 		//check if we can use the minimal Version
 		MifareUltralight mfu = MifareUltralight.get(tag);
 		try {
+			Log.d(TAG, "trying mifare");
 			mfu.connect();
 			command = new byte[1];
 			command[0] = (byte) 0x60; // GET_VERSION
 			answer = mfu.transceive(command);
+			Log.d(TAG, "answer: " + answer);
 			prod = (new Ntag_Get_Version(answer)).Get_Product();
 			mfu.close();
 			if (prod == Prod.NTAG_I2C_1k || prod == Prod.NTAG_I2C_2k
